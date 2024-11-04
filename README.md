@@ -1,6 +1,19 @@
 # ddcomments
 Blazingly Fast Comment Remover written in Zig for languages that use `//` and `/* */` for comments.
 
+<details>
+<summary>Supported Languages</summary>
+- C
+- C++
+- zig
+- rust
+- Go
+- Java
+- JavaScript
+- TypeScript
+- etc
+</details>
+
 [![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/aliel0malki/ddcomments/blob/main/LICENSE)
 ![Build Status](https://github.com/aliel0malki/ddcomments/actions/workflows/release.yml/badge.svg?branch=main)
 ![Tests](https://github.com/aliel0malki/ddcomments/actions/workflows/tests.yml/badge.svg?branch=main)
@@ -43,9 +56,6 @@ ddcomments src output
 
 ## Contributing?
 you welcome!
-
-## next?
-support for other languages
 
 ## License
 This project is licensed under the MIT License - check out the [LICENSE](LICENSE) file for the nitty-gritty.
