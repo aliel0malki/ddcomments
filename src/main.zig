@@ -6,14 +6,9 @@
 // ┃               multi-platform compatibility                    ┃
 // ┃                                                               ┃
 // ┃                  Created by: aliel0malki                      ┃
-// ┃                Last Updated: 20224-011-4                      ┃
+// ┃                Last Updated: 2024-11-4                        ┃
+// ┃                      License: MIT                             ┃
 // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-//
-// Description: A tool to strip comments from code files.
-// Usage: ddcomments <input_directory> <output_directory>
-// Requirements: Zig 0.13.0
-// License: MIT
-//
 
 const std = @import("std");
 pub fn main() !void {
