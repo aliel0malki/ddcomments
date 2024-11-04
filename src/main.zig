@@ -19,7 +19,8 @@ pub fn main() !void {
     }
     const directory = args[1];
     const outputDirectory = args[2];
-
+    var files_count: usize = 0;
+    var comments_count: usize = 0;
     std.fs.cwd().makeDir(outputDirectory) catch |err| switch (err) {
         error.PathAlreadyExists => {
             std.fs.cwd().deleteTree(outputDirectory) catch |e| {
@@ -33,7 +34,6 @@ pub fn main() !void {
         },
         else => |e| return e,
     };
-
     var dir = try std.fs.cwd().openDir(directory, .{ .iterate = true });
     defer dir.close();
     var iterator = dir.iterate();
@@ -41,16 +41,19 @@ pub fn main() !void {
         if (entry.kind == .file) {
             const fullPath = try std.fs.path.join(std.heap.page_allocator, &.{ directory, entry.name });
             std.debug.print("Processing file: {s}\n", .{fullPath});
-            processFile(outputDirectory, fullPath) catch |err| {
+            processFile(outputDirectory, fullPath, &comments_count) catch |err| {
                 std.debug.print("Error processing file {s}: {s}\n", .{ entry.name, @errorName(err) });
             };
+            files_count += 1;
         }
     }
+    std.debug.print("--------------------------------------------\n", .{});
+    std.debug.print("{d} FILES PROCESSED && {d} COMMENT REMOVED \n", .{ files_count, comments_count });
+    std.debug.print("--------------------------------------------\n", .{});
 }
-fn processFile(outputDirectory: []const u8, filePath: []const u8) !void {
+fn processFile(outputDirectory: []const u8, filePath: []const u8, comments_count: *usize) !void {
     const file = try std.fs.cwd().openFile(filePath, .{ .mode = std.fs.File.OpenMode.read_only });
     defer file.close();
-
     const outputFileName = std.fs.path.basename(filePath);
     const outputFilePath = try std.fs.path.join(std.heap.page_allocator, &.{ outputDirectory, outputFileName });
     const output = try std.fs.cwd().createFile(outputFilePath, .{ .mode = 0o644 });
@@ -65,38 +68,33 @@ fn processFile(outputDirectory: []const u8, filePath: []const u8) !void {
         const len = line.len;
         for (0..len) |i| {
             const currentChar = line[i];
-
             if (currentChar == '"' or currentChar == '\'') {
                 insideString = !insideString;
             }
-
             if (insideString) continue;
-
             if (i + 1 < len and currentChar == '/' and line[i + 1] == '/') {
                 processedLine = processedLine[0..i];
+                comments_count.* += 1;
                 break;
             }
-
             if (currentChar == '/' and i + 1 < len and line[i + 1] == '*') {
                 insideBlockComment = true;
                 processedLine = processedLine[0..i];
+                comments_count.* += 1;
                 break;
             }
             if (currentChar == '*' and i + 1 < len and line[i + 1] == '/') {
                 insideBlockComment = false;
-
                 processedLine = processedLine[0..i];
+                comments_count.* += 1;
                 break;
             }
         }
-
         if (insideBlockComment) {
             continue;
         }
-
         if (processedLine.len > 0) {
             try writer.writeAll(try std.mem.concat(std.heap.page_allocator, u8, &.{ processedLine, "\n" }));
         }
     }
-    std.debug.print("{s}: COMPLETED\n", .{filePath});
 }
