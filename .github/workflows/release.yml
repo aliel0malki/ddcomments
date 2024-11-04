@@ -48,7 +48,5 @@ jobs:
             zig-out/x86_64-linux-musl.tar.gz
             zig-out/aarch64-linux.tar.gz
             zig-out/aarch64-macos.tar.gz
-          body: |
-            $(cat release_notes.md)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
