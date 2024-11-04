@@ -1,0 +1,54 @@
+name: release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Zig
+        uses: mlugg/setup-zig@v1
+        with:
+          version: 0.13.0
+
+      - name: Build the binaries
+        run: |
+          zig build
+
+      - name: List artifact directory
+        run: |
+          echo "Listing files in the artifact directory:"
+          ls -la zig-out/x86_64-linux-gnu/
+          ls -la zig-out/x86_64-linux-musl/
+          ls -la zig-out/aarch64-linux/
+          ls -la zig-out/aarch64-macos/
+
+      - name: Create tar.gz archives
+        run: |
+          tar -czf zig-out/x86_64-linux-gnu.tar.gz -C zig-out/x86_64-linux-gnu . LICENSE README.md
+          tar -czf zig-out/x86_64-linux-musl.tar.gz -C zig-out/x86_64-linux-musl . LICENSE README.md
+          tar -czf zig-out/aarch64-linux.tar.gz -C zig-out/aarch64-linux . LICENSE README.md
+          tar -czf zig-out/aarch64-macos.tar.gz -C zig-out/aarch64-macos . LICENSE README.md
+
+      - name: Create release and upload binaries
+        uses: ncipollo/release-action@v1.14.0
+        with:
+          tag: ${{ github.event.release.tag }}
+          allowUpdates: true
+          artifacts: |
+            zig-out/x86_64-linux-gnu.tar.gz
+            zig-out/x86_64-linux-musl.tar.gz
+            zig-out/aarch64-linux.tar.gz
+            zig-out/aarch64-macos.tar.gz
+          body: |
+            $(cat release_notes.md)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

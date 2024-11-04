@@ -1,0 +1,12 @@
+this is my file u dumb fool
+//this is comment
+// this is comment
+this is my file u dumb fool
+this is my file u dumb fool 3
+this is my file u dumb fool 4 // this is an inline comment
+this is my file u dumb fool 5 
+6his is my file u dumb fool 5 /* um */
+/*
+sssssssssssssssssssssmmmmmmmmmmmmmmmmmmmm
+*/
+this is my file u dumb fool 66 /* um */
