@@ -3,14 +3,24 @@ Blazingly Fast Comment Remover written in Zig for languages that use `//` and `/
 
 <details>
 <summary>Supported Languages</summary>
+list
+  
 - C
+
 - C++
-- zig
-- rust
+  
+- Zig
+  
+- Rust
+  
 - Go
+  
 - Java
+  
 - JavaScript
+  
 - TypeScript
+  
 - etc
 </details>
 
